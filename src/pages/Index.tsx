@@ -1,16 +1,17 @@
 
 import { useState, useEffect } from 'react';
-import { Settings, Terminal, Shield, Activity, Wifi, HardDrive, Cpu, Globe } from 'lucide-react';
+import { Settings, Activity, Wifi, Shield, Globe } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Progress } from '@/components/ui/progress';
+import SumUpPanel from '@/components/SumUpPanel';
+import CommandTerminal from '@/components/CommandTerminal';
 
 const Index = () => {
   const [language, setLanguage] = useState('en');
   const [matrixEffect, setMatrixEffect] = useState(true);
-  const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const languages = {
@@ -22,8 +23,7 @@ const Index = () => {
       systemStats: 'System Stats',
       networkMonitor: 'Network Monitor',
       securityStatus: 'Security Status',
-      terminal: 'Terminal',
-      commands: 'Recent Commands'
+      quickActions: 'Quick Actions'
     },
     es: {
       title: 'PANEL DE HACKER',
@@ -33,8 +33,7 @@ const Index = () => {
       systemStats: 'Estadísticas del Sistema',
       networkMonitor: 'Monitor de Red',
       securityStatus: 'Estado de Seguridad',
-      terminal: 'Terminal',
-      commands: 'Comandos Recientes'
+      quickActions: 'Acciones Rápidas'
     },
     fr: {
       title: 'TABLEAU DE BORD HACKER',
@@ -44,8 +43,7 @@ const Index = () => {
       systemStats: 'Statistiques Système',
       networkMonitor: 'Moniteur Réseau',
       securityStatus: 'Statut Sécurité',
-      terminal: 'Terminal',
-      commands: 'Commandes Récentes'
+      quickActions: 'Actions Rapides'
     }
   };
 
@@ -56,26 +54,8 @@ const Index = () => {
       setCurrentTime(new Date());
     }, 1000);
 
-    const commands = [
-      'nmap -sS target.com',
-      'sudo wireshark -i eth0',
-      'hydra -l admin -P wordlist.txt ssh://192.168.1.1',
-      'metasploit > use exploit/windows/smb/ms17_010_eternalblue',
-      'john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt',
-      'sqlmap -u "http://target.com/page.php?id=1" --dbs'
-    ];
-
-    const terminalTimer = setInterval(() => {
-      const randomCommand = commands[Math.floor(Math.random() * commands.length)];
-      setTerminalLines(prev => {
-        const newLines = [...prev, `root@kali:~# ${randomCommand}`];
-        return newLines.slice(-8); // Keep only last 8 lines
-      });
-    }, 3000);
-
     return () => {
       clearInterval(timer);
-      clearInterval(terminalTimer);
     };
   }, []);
 
@@ -103,6 +83,10 @@ const Index = () => {
         ))}
       </div>
     );
+  };
+
+  const handleCommandExecute = (command: string) => {
+    console.log('Command executed:', command);
   };
 
   return (
@@ -245,30 +229,19 @@ const Index = () => {
             </div>
           </Card>
 
-          {/* Terminal */}
-          <Card className="lg:col-span-2 bg-black/60 border-green-400/30 backdrop-blur-sm p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Terminal className="h-5 w-5 text-cyan-400" />
-              <h2 className="text-lg font-semibold text-cyan-400">{t.terminal}</h2>
-            </div>
-            
-            <div className="bg-black/40 p-4 rounded border border-green-400/20 min-h-[200px] font-mono text-sm">
-              {terminalLines.map((line, index) => (
-                <div key={index} className="text-green-400 mb-1">
-                  {line}
-                </div>
-              ))}
-              <div className="text-green-400 flex">
-                root@kali:~# <span className="animate-pulse ml-1">█</span>
-              </div>
-            </div>
-          </Card>
+          {/* SumUp Integration Panel */}
+          <SumUpPanel language={language} />
+
+          {/* Command Terminal */}
+          <div className="lg:col-span-2">
+            <CommandTerminal language={language} onCommandExecute={handleCommandExecute} />
+          </div>
 
           {/* Quick Actions */}
-          <Card className="lg:col-span-2 bg-black/60 border-green-400/30 backdrop-blur-sm p-6">
+          <Card className="bg-black/60 border-green-400/30 backdrop-blur-sm p-6">
             <div className="flex items-center gap-2 mb-4">
               <Globe className="h-5 w-5 text-cyan-400" />
-              <h2 className="text-lg font-semibold text-cyan-400">Quick Actions</h2>
+              <h2 className="text-lg font-semibold text-cyan-400">{t.quickActions}</h2>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
