@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -99,5 +100,45 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Courier New', monospace;
+  }
+}
+
+/* Cyberpunk custom styles */
+@layer components {
+  .hacker-glow {
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+  }
+  
+  .matrix-char {
+    animation: matrix-rain 3s linear infinite;
+  }
+  
+  .terminal-cursor {
+    background-color: #00ff00;
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  .cyber-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    backdrop-filter: blur(10px);
+  }
+  
+  .cyber-button {
+    background: rgba(0, 100, 0, 0.3);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    color: #00ff00;
+    transition: all 0.3s ease;
+  }
+  
+  .cyber-button:hover {
+    background: rgba(0, 100, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
   }
 }
